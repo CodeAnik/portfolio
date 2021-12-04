@@ -330,20 +330,20 @@ footer p{
 }
 .hello {
 	background-image:url(../img/hello.png);
- background-position: left;
- background-repeat: no-repeat;
- background-size: contain;
- padding: 10px 10px 16px 23px;
- margin-top:90px;
+	background-position: left;
+	background-repeat: no-repeat;
+	background-size: contain;
+	padding: 10px 10px 16px 23px;
+	margin-top:90px;
 }
 
 .hello_blog {
 	background-image:url(../img/hello.png);
- background-position: left;
- background-repeat: no-repeat;
- background-size: contain;
- padding: 12px 12px 26px 20px;
- margin-top:90px;
+	background-position: left;
+	background-repeat: no-repeat;
+	background-size: contain;
+	padding: 12px 12px 26px 20px;
+	margin-top:90px;
 }
 
 .hello h2 {
@@ -369,6 +369,7 @@ footer p{
 	padding:10px 25px;
 	background-color:#f41067;
 	border:1px solid #f41067;
+	box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
 .resume a:hover {
 	color:#f41067;
@@ -381,11 +382,13 @@ footer p{
 	display:inline-block;
 	padding-top:8px;
 	padding-bottom:8px;
+	box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
 .social a {
-	color:#a8b3b9;
+	color:#9fa2a3;
 	font-size:24px;
 	padding:5px 10px;
+	
 }
 .social a:first-child {
 	padding-left:18px !important;
@@ -393,9 +396,45 @@ footer p{
 
 .social a:last-child {
 	padding-right:18px;
+	
 }
 .social a:hover {
 	color:#f41067;
+	border: #f41067;
+	border-style: solid;
+}
+/* Blog page Section */
+.socialblog {
+	margin-top:90px;
+	background-color:#ffffff;
+	display:inline-block;
+	padding-top:8px;
+	padding-bottom:8px;
+	box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+.socialblog:hover {
+	border: #f41067;
+	border-style: solid;
+}
+.socialblog a {
+	color:#9fa2a3;
+	font-size:24px;
+	padding:5px 10px;
+	
+}
+.socialblog a:first-child {
+	padding-left:18px !important;
+}
+
+.socialblog a:last-child {
+	padding-right:18px;
+	
+}
+.socialblog a:hover {
+	color:#f41067;
+}
+.socialblog h5 {
+	display: inline-block;
 }
 
 /* About Me Section */
@@ -407,6 +446,7 @@ footer p{
     background-color: #ffffff;
     display: inline-block;
     padding-left: 9%;
+	box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
 .about-me-heading h1 span:first-child {
 	font-family: Montserrat-Light;
@@ -439,6 +479,7 @@ footer p{
 	float:right;
 	padding-right:9%;
 	padding-left:30px;
+	box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
 #skill-progress {
 	color:#5f5f5f;
@@ -491,6 +532,7 @@ footer p{
     background-color: #ffffff;
     display: inline-block;
     padding-left: 9%;
+	box-shadow: rgba(0, 0.53, 0, 0.35) 0px 5px 15px;
 }
 .work-exp-heading h1 span:first-child {
 	font-family: Montserrat-Light;
@@ -582,6 +624,7 @@ footer p{
 .work-title h1 span:first-child {
 	font-family: Montserrat-Light;
 	color:#868686;
+	font-weight:bold;
 }
 .work-title h1 span:last-child {
 	font-family: Montserrat-Bold;
@@ -751,6 +794,7 @@ footer p{
     background-color: #ffffff;
     display: inline-block;
     padding-left: 9%;
+	box-shadow: rgba(0, 0.53, 0, 0.35) 0px 5px 15px;
 }
 .contact-heading h1 span:first-child {
 	font-family: Montserrat-Light;
@@ -786,6 +830,7 @@ footer p{
 	padding-top:8px;
 	padding-bottom:8px;
 	display: inline-block;
+	box-shadow: rgba(0, 0.53, 0, 0.35) 0px 5px 15px;
 }
 .contact-social a {
 	color:#a8b3b9;
@@ -810,6 +855,7 @@ textarea {
 	font-family: Montserrat-light;
 	-webkit-transition: width 10s;
 	color:#868686;
+
 }
 .home-contact .form-btn {
 	color:#ffffff;
@@ -818,6 +864,7 @@ textarea {
 	background-color:#f41067;
 	border:1px solid #f41067;
 	cursor:pointer;
+	box-shadow: rgba(0, 0.53, 0, 0.35) 0px 5px 15px;
 }
 .home-contact .form-btn:hover {
 	color:#f41067;
