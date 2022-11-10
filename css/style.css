@@ -345,6 +345,15 @@ footer p{
 	padding: 12px 12px 26px 20px;
 	margin-top:90px;
 }
+.blog_page {
+	background-image:url(../img/hello.png);
+	background-position: left;
+	background-repeat: no-repeat;
+	background-size: contain;
+	padding: 12px 12px 26px 20px;
+	margin-top:30px;
+	color: rgb(255, 255, 255);
+}
 
 .hello h2 {
 	color:#ffffff;
