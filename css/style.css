@@ -626,6 +626,89 @@ footer p{
 	 font-size:16px;
 }
 
+/* For My Skills Sections*/
+.list-group-skills.vertical-steps-skills .list-group-item-skills {
+	border: none;
+	border-left: 2px solid #fbc10a;
+	box-sizing: border-box;
+	border-radius: 0;
+	padding-left: 20px;
+	padding-right: 0px;
+	padding-bottom: 20px;
+	padding-top: 0px;
+	background-color: transparent;
+}
+
+.list-group-skills.vertical-steps-skills .list-group-item-skills.active {
+	background-color: transparent;
+	color: inherit;
+}
+
+.list-group-skills.vertical-steps-skills .list-group-item-skills:last-child {
+	border-left: 3px solid transparent;
+	padding-bottom: 0;
+}
+
+.list-group-skills.vertical-steps-skills .list-group-item-skills::before {
+	border-radius: 50%;
+	background-color: #ffffff;
+	color: #fff;
+	content: '';
+	display: inline-block;
+	float: left;
+	height: 17px;
+	line-height: 25px;
+	margin-left: -29px;
+	text-align: center;
+	width: 17px;
+}
+
+.list-group-skills.vertical-steps-skills .list-group-item-skills span,
+.list-group-skills.vertical-steps-skills .list-group-item-skills a {
+	overflow: hidden;
+	padding-top: 2px;
+}
+
+.list-group-skills.vertical-steps-skills .list-group-item-skills.completed {
+	border-left: 1px solid #e8e8e8;
+}
+
+.list-group-skills.vertical-steps-skills .list-group-item-skills.completed::before {
+	color: #fff;
+	border: 5px solid #fbc10a;
+}
+
+.list-group-item-skills h4 {
+	font-family: Montserrat-Bold;
+	color: #f41067;
+	margin-right: 20px;
+	font-size: 22px;
+	line-height: 38px;
+}
+
+.list-group-item-skills span {
+	background-color: #ffc107;
+	padding: 3px 10px;
+	color: #ffffff;
+	border-radius: 15px;
+	font-size: 13px;
+	font-family: Montserrat-SemiBoldItalic;
+}
+
+.list-group-item-skills h5 {
+	font-family: Montserrat-Medium;
+	color: #5f5f5f;
+	text-transform: uppercase;
+	clear: both;
+	font-size: 18px;
+}
+
+.list-group-item-skills p {
+	font-family: Montserrat-Light;
+	color: #868686;
+	font-size: 16px;
+}
+
 /* My Work Section*/
 #my-work {
 	background-color:#FFF;	
