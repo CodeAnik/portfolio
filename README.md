@@ -2,11 +2,13 @@
 
 Hi,
 I'm Anik Khan
-Web Designer & Font-end,Back-End Developer
+Web Developer (WordPress, Font-end, Back-End)
+Graphics Designer
+
 
 ##About Me
 
-I'm Anik Khan. I am Website Developer. and I'm very passionate and dedicated to my work.I have a lot of experienceas a professional Website Develop, I have acquired the skills and knowledge necessary to make your project a success.
+I'm Anik Khan. I am a Web Developer. I'm very passionate and dedicated to my work. I have a lot of experience as a professional Website developer, and I have acquired the skills and knowledge necessary to make your project successful.
 
 # I’m Available for Work
 Please contact with me.
