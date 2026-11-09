@@ -1,0 +1,38 @@
+---
+import Button from '@/components/ui/Button.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { url } from '@/lib/url';
+---
+
+<BaseLayout title="Page not found" description="The page you were looking for doesn’t exist or has moved." noindex>
+  <section class="relative isolate flex min-h-[calc(100dvh-4.5rem)] items-center overflow-hidden">
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10">
+      <div class="bg-grid absolute inset-0 [mask-image:radial-gradient(ellipse_70%_60%_at_50%_45%,#000_30%,transparent_100%)]"></div>
+      <div
+        class="animate-drift absolute top-1/4 left-1/2 size-[36rem] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,var(--glow-brand),transparent_65%)] blur-2xl"
+      >
+      </div>
+      <div class="bg-noise absolute inset-0"></div>
+    </div>
+
+    <div class="container-x py-20 text-center">
+      <p class="animate-rise font-mono text-xs font-medium tracking-[0.3em] text-brand-ink uppercase" style="--i:0">Error 404</p>
+      <p
+        class="animate-rise animate-float mt-6 font-display text-[7rem] leading-none font-extrabold tracking-[-0.06em] sm:text-[10rem] lg:text-[13rem]"
+        style="--i:1"
+        aria-hidden="true"
+      >
+        <span class="text-gradient">404</span>
+      </p>
+      <h1 class="animate-rise mt-4 text-3xl font-bold sm:text-4xl" style="--i:2">Page not found</h1>
+      <p class="animate-rise mx-auto mt-4 max-w-md text-fg-muted" style="--i:3">
+        The page you’re looking for doesn’t exist or has moved. Old links from the previous version of this site may point here.
+      </p>
+      <div class="animate-rise mt-10 flex flex-wrap justify-center gap-3" style="--i:4">
+        <Button href={url('/')} size="lg" icon="arrow-left" iconPosition="start">Back Home</Button>
+        <Button href={url('/projects/')} variant="secondary" size="lg" icon="layers" iconPosition="start">View Projects</Button>
+        <Button href={url('/contact/')} variant="ghost" size="lg" icon="mail" iconPosition="start">Contact Me</Button>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

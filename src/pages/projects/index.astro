@@ -1,0 +1,112 @@
+---
+import ProjectCard from '@/components/cards/ProjectCard.astro';
+import PageHeader from '@/components/layout/PageHeader.astro';
+import CTASection from '@/components/sections/CTASection.astro';
+import { liveClientSites, projectCategories, projects } from '@/data/projects';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+const breadcrumbs = [{ name: 'Projects', path: '/projects/' }];
+const filters = [
+  { id: 'all', label: 'All', count: projects.length },
+  ...projectCategories
+    .map((c) => ({ ...c, count: projects.filter((p) => p.categories.includes(c.id)).length }))
+    .filter((c) => c.count > 0),
+];
+---
+
+<BaseLayout
+  title="Projects — Full-Stack, WordPress & E-commerce Work"
+  description={`${liveClientSites.length} live client websites, online stores and platforms by Md. Anik Khan, with screenshots, the stack and a link to each live site.`}
+  breadcrumbs={breadcrumbs}
+>
+  <PageHeader
+    eyebrow="Projects"
+    title="Websites, stores and platforms, live for real clients."
+    lead={`${liveClientSites.length} live projects for businesses in Bangladesh, the US, Europe and beyond — full-stack platforms, WooCommerce stores and WordPress websites — plus code from my public GitHub repositories.`}
+    breadcrumbs={breadcrumbs}
+  />
+
+  <section class="section pt-12 sm:pt-14" aria-label="Project list">
+    <div class="container-x">
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between" data-project-filters hidden>
+        <div role="group" aria-label="Filter projects by category" class="-mx-1 flex flex-wrap gap-2">
+          {
+            filters.map((filter) => (
+              <button
+                type="button"
+                data-filter={filter.id}
+                aria-pressed={filter.id === 'all' ? 'true' : 'false'}
+                class="filter-btn inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-fg-muted transition-all duration-200 hover:border-border-strong hover:text-fg"
+              >
+                {filter.label}
+                <span class="filter-count rounded-full bg-surface-2 px-1.5 font-mono text-[0.6875rem] text-fg-subtle">{filter.count}</span>
+              </button>
+            ))
+          }
+        </div>
+        <p class="text-sm text-fg-subtle" data-project-count aria-live="polite">Showing {projects.length} projects</p>
+      </div>
+
+      <h2 class="sr-only">All projects</h2>
+      <div class="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3" data-project-grid>
+        {projects.map((project, index) => <ProjectCard project={project} eager={index < 3} revealDelay={(index % 3) * 70} />)}
+      </div>
+      <p class="mt-10 hidden text-center text-fg-muted" data-project-empty>No projects in this category yet.</p>
+    </div>
+  </section>
+
+  <CTASection title="Want something like this for your business?" />
+</BaseLayout>
+
+<style>
+  .filter-btn[aria-pressed='true'] {
+    border-color: transparent;
+    background: var(--fg);
+    color: var(--bg);
+  }
+  .filter-btn[aria-pressed='true'] .filter-count {
+    background: color-mix(in oklab, var(--bg) 18%, transparent);
+    color: var(--bg);
+  }
+</style>
+
+<script>
+  const bar = document.querySelector<HTMLElement>('[data-project-filters]');
+  const grid = document.querySelector<HTMLElement>('[data-project-grid]');
+  const count = document.querySelector<HTMLElement>('[data-project-count]');
+  const empty = document.querySelector<HTMLElement>('[data-project-empty]');
+
+  if (bar && grid) {
+    bar.hidden = false;
+    const buttons = Array.from(bar.querySelectorAll<HTMLButtonElement>('[data-filter]'));
+    const cards = Array.from(grid.querySelectorAll<HTMLElement>('[data-categories]'));
+    const valid = new Set(buttons.map((b) => b.dataset.filter));
+
+    const apply = (filter: string, updateUrl = true) => {
+      let shown = 0;
+      cards.forEach((card) => {
+        const match = filter === 'all' || (card.dataset.categories ?? '').split(' ').includes(filter);
+        card.hidden = !match;
+        if (match) {
+          shown++;
+          card.classList.add('is-visible');
+        }
+      });
+      buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.filter === filter)));
+      if (count) count.textContent = `Showing ${shown} ${shown === 1 ? 'project' : 'projects'}`;
+      empty?.classList.toggle('hidden', shown > 0);
+
+      if (updateUrl) {
+        const url = new URL(window.location.href);
+        if (filter === 'all') url.searchParams.delete('category');
+        else url.searchParams.set('category', filter);
+        history.replaceState(null, '', url);
+      }
+    };
+
+    buttons.forEach((button) => button.addEventListener('click', () => apply(button.dataset.filter ?? 'all')));
+
+    const initial = new URL(window.location.href).searchParams.get('category');
+    if (initial && valid.has(initial)) apply(initial, false);
+  }
+</script>

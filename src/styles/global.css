@@ -1,0 +1,332 @@
+/* Astro's responsive-image defaults must sit below Tailwind's layers so utilities win. */
+@layer astro.images;
+@import 'tailwindcss';
+@import '@fontsource-variable/montserrat';
+@import '@fontsource-variable/inter';
+
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+/*
+ * Design tokens
+ * Brand colors come from the original portfolio:
+ *   #f41067  primary magenta (headings, links, buttons in the old CSS)
+ *   #ffc107  amber accent (timeline markers, highlights)
+ *   #e95f32 → #f19536  orange gradient from the original "Md. Anik Khan" logo
+ *   #5f5f5f / #868686 / #e8e8e8  text and border greys
+ */
+:root {
+  color-scheme: light;
+
+  --brand: #f41067;
+  --brand-strong: #d90b5a; /* AA-compliant on white and for white text on fills */
+  --brand-hover: #bd094e;
+  --brand-soft: #fdebf2;
+  --brand-ink: #d90b5a; /* brand-colored text */
+  --accent: #ffc107;
+  --accent-ink: #9a5b00;
+  --orange: #e95f32;
+  --gradient-brand: linear-gradient(100deg, #f41067 0%, #e95f32 55%, #ffc107 100%);
+
+  --bg: #ffffff;
+  --bg-subtle: #f7f7f9;
+  --surface: #ffffff;
+  --surface-2: #f3f3f6;
+  --fg: #0e0e11;
+  --fg-muted: #55555e;
+  --fg-subtle: #6e6e78;
+  --border: #e8e8ec;
+  --border-strong: #d6d6de;
+  --grid-line: rgb(14 14 17 / 0.045);
+  --glow-brand: rgb(244 16 103 / 0.16);
+  --glow-accent: rgb(255 193 7 / 0.14);
+  --shadow-sm: 0 1px 2px rgb(14 14 17 / 0.05);
+  --shadow-md: 0 1px 2px rgb(14 14 17 / 0.04), 0 12px 32px -16px rgb(14 14 17 / 0.18);
+  --shadow-lg: 0 2px 4px rgb(14 14 17 / 0.04), 0 24px 56px -24px rgb(14 14 17 / 0.28);
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --brand-soft: rgb(244 16 103 / 0.12);
+  --brand-ink: #ff5c93;
+  --accent-ink: #ffc94a;
+
+  --bg: #0b0b0e;
+  --bg-subtle: #101014;
+  --surface: #131318;
+  --surface-2: #1a1a21;
+  --fg: #f3f3f6;
+  --fg-muted: #a8a8b3;
+  --fg-subtle: #8b8b96;
+  --border: #24242c;
+  --border-strong: #34343e;
+  --grid-line: rgb(255 255 255 / 0.04);
+  --glow-brand: rgb(244 16 103 / 0.22);
+  --glow-accent: rgb(255 193 7 / 0.1);
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-md: 0 1px 2px rgb(0 0 0 / 0.3), 0 16px 40px -20px rgb(0 0 0 / 0.7);
+  --shadow-lg: 0 2px 4px rgb(0 0 0 / 0.3), 0 28px 64px -28px rgb(0 0 0 / 0.85);
+}
+
+@theme inline {
+  --color-brand: var(--brand);
+  --color-brand-strong: var(--brand-strong);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-soft: var(--brand-soft);
+  --color-brand-ink: var(--brand-ink);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-orange: var(--orange);
+  --color-bg: var(--bg);
+  --color-bg-subtle: var(--bg-subtle);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-subtle: var(--fg-subtle);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+
+  --font-display: 'Montserrat Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: ui-monospace, 'SFMono-Regular', 'Cascadia Code', Consolas, 'Liberation Mono', monospace;
+
+  --radius-card: 1rem;
+  --radius-control: 0.75rem;
+
+  --shadow-card: var(--shadow-md);
+  --shadow-lift: var(--shadow-lg);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+    scroll-padding-top: 5.5rem;
+  }
+
+  body {
+    @apply bg-bg font-sans text-fg antialiased;
+    font-size: 1rem;
+    line-height: 1.65;
+    font-feature-settings: 'cv11', 'ss01';
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display text-fg;
+    letter-spacing: -0.025em;
+    line-height: 1.12;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: var(--brand);
+    color: #fff;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--brand-ink);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  img,
+  svg,
+  video {
+    max-width: 100%;
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+}
+
+@layer components {
+  .container-x {
+    width: 100%;
+    max-width: 76rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 768px) {
+    .container-x {
+      padding-inline: 2rem;
+    }
+  }
+
+  .section {
+    padding-block: 5rem;
+  }
+  @media (min-width: 1024px) {
+    .section {
+      padding-block: 7rem;
+    }
+  }
+
+  .eyebrow {
+    @apply font-mono text-xs font-medium tracking-[0.18em] text-brand-ink uppercase;
+  }
+
+  .text-gradient {
+    background: var(--gradient-brand);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .card {
+    @apply rounded-[var(--radius-card)] border border-border bg-surface;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1 text-xs font-medium text-fg-muted;
+  }
+
+  .link {
+    @apply font-medium text-brand-ink underline decoration-brand/30 decoration-2 underline-offset-4 transition-colors hover:decoration-brand;
+  }
+
+  /* Subtle engineering grid used behind hero and page headers */
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 80% 70% at 50% 0%, #000 40%, transparent 100%);
+  }
+
+  .bg-noise {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E");
+    opacity: 0.035;
+    mix-blend-mode: overlay;
+  }
+  :root[data-theme='dark'] .bg-noise {
+    opacity: 0.06;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Motion
+ * ------------------------------------------------------------------------- */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes drift {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(3%, 4%, 0) scale(1.06);
+  }
+  100% {
+    transform: translate3d(-2%, 2%, 0) scale(0.98);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.animate-rise {
+  animation: rise 0.7s var(--ease-out-expo) both;
+  animation-delay: calc(var(--i, 0) * 70ms + 30ms);
+}
+
+.animate-drift {
+  animation: drift 22s ease-in-out infinite alternate;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Scroll reveal: elements are only hidden after the reveal script has run (see Reveal.astro). */
+.reveal-ready [data-reveal] {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.8s var(--ease-out-expo),
+    transform 0.8s var(--ease-out-expo);
+  transition-delay: calc(var(--reveal-delay, 0) * 1ms);
+}
+.reveal-ready [data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Smooth theme switch without animating every property on load */
+.theme-transition,
+.theme-transition *,
+.theme-transition *::before,
+.theme-transition *::after {
+  transition:
+    background-color 0.35s ease,
+    border-color 0.35s ease,
+    color 0.2s ease,
+    fill 0.2s ease !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal-ready [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Circular theme reveal (ThemeToggle uses the View Transitions API when available) */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* Shiki dual-theme code blocks follow the site theme */
+.astro-code {
+  background-color: var(--surface-2) !important;
+}
+:root[data-theme='dark'] .astro-code,
+:root[data-theme='dark'] .astro-code span {
+  color: var(--shiki-dark) !important;
+}

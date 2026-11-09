@@ -1,0 +1,15 @@
+{
+  "name": "Md. Anik Khan — Full-Stack Developer using Agentic AI",
+  "short_name": "Anik Khan",
+  "description": "Portfolio of Md. Anik Khan, building complete websites and web applications with full-stack and agentic AI workflows.",
+  "start_url": "/portfolio/",
+  "scope": "/portfolio/",
+  "display": "browser",
+  "background_color": "#0b0b0e",
+  "theme_color": "#0b0b0e",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

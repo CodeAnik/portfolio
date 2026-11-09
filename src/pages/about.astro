@@ -1,0 +1,102 @@
+---
+import { Image } from 'astro:assets';
+import portrait from '@/assets/profile/anik-khan-portrait.webp';
+import PageHeader from '@/components/layout/PageHeader.astro';
+import CTASection from '@/components/sections/CTASection.astro';
+import EducationSection from '@/components/sections/EducationSection.astro';
+import ResumeSection from '@/components/sections/ResumeSection.astro';
+import SkillsSection from '@/components/sections/SkillsSection.astro';
+import Icon from '@/components/ui/Icon.astro';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import { profile } from '@/data/profile';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+const breadcrumbs = [{ name: 'About', path: '/about/' }];
+---
+
+<BaseLayout
+  title="About Md. Anik Khan — Full-Stack & Agentic AI Development"
+  description="About Md. Anik Khan: a full-stack developer in Dhaka building websites and applications with modern frameworks, WordPress and agentic AI workflows."
+  type="profile"
+  breadcrumbs={breadcrumbs}
+>
+  <PageHeader
+    eyebrow="About"
+    title="A developer with real fundamentals who builds with modern tools."
+    lead={profile.summary}
+    breadcrumbs={breadcrumbs}
+  />
+
+  <section class="section" aria-labelledby="story-title">
+    <div class="container-x grid gap-14 lg:grid-cols-12 lg:gap-16">
+      <div class="lg:col-span-5">
+        <figure class="card about-figure relative overflow-hidden lg:sticky lg:top-28" data-reveal>
+          <Image
+            src={portrait}
+            alt={`Portrait of ${profile.name}`}
+            widths={[360, 540, 720]}
+            sizes="(min-width: 1024px) 420px, 90vw"
+            class="mx-auto h-auto w-[78%] pt-8"
+          />
+          <figcaption class="relative border-t border-border bg-surface px-6 py-5">
+            <p class="font-display text-lg font-bold">{profile.name}</p>
+            <p class="text-sm text-fg-muted">{profile.role} · {profile.location.label}</p>
+          </figcaption>
+        </figure>
+      </div>
+
+      <div class="lg:col-span-7">
+        <SectionHeading id="story-title" eyebrow="My story" title="From WordPress builds to full-stack platforms" />
+        <div class="mt-8 space-y-5 text-base text-fg-muted sm:text-lg" data-reveal>
+          {profile.about.map((paragraph) => <p>{paragraph}</p>)}
+          <p>
+            Away from client work I’m interested in {profile.interests.slice(0, -1).join(', ').toLowerCase()} and {profile.interests.at(-1)?.toLowerCase()}.
+          </p>
+        </div>
+
+        <h3 class="mt-14 font-mono text-xs font-medium tracking-[0.18em] text-fg-subtle uppercase" data-reveal>How I approach a project</h3>
+        <ol class="mt-6 grid gap-4">
+          {
+            profile.approach.map((step, index) => (
+              <li class="card flex gap-5 p-6" data-reveal style={`--reveal-delay:${index * 70}`}>
+                <span class="font-display text-2xl font-extrabold text-brand">{String(index + 1).padStart(2, '0')}</span>
+                <div>
+                  <h4 class="text-base font-bold">{step.title}</h4>
+                  <p class="mt-1.5 text-sm text-fg-muted">{step.body}</p>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+
+        <h3 class="mt-14 font-mono text-xs font-medium tracking-[0.18em] text-fg-subtle uppercase" data-reveal>Strengths</h3>
+        <ul class="mt-6 grid gap-3 sm:grid-cols-2" data-reveal>
+          {
+            profile.strengths.map((strength) => (
+              <li class="flex gap-3 text-sm text-fg">
+                <Icon name="check" size={18} class="mt-0.5 text-brand-ink" strokeWidth={2.25} />
+                {strength}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="border-t border-border bg-bg-subtle">
+    <SkillsSection eyebrow="Skills" />
+  </div>
+  <EducationSection eyebrow="Education & leadership" />
+  <ResumeSection variant="full" />
+  <CTASection />
+</BaseLayout>
+
+<style>
+  .about-figure {
+    background:
+      radial-gradient(circle at 50% 30%, color-mix(in oklab, var(--brand) 20%, transparent), transparent 60%),
+      radial-gradient(circle at 80% 80%, color-mix(in oklab, var(--accent) 14%, transparent), transparent 55%),
+      var(--surface-2);
+  }
+</style>

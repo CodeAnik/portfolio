@@ -1,0 +1,65 @@
+---
+import '@/styles/global.css';
+import montserratLatin from '@fontsource-variable/montserrat/files/montserrat-latin-wght-normal.woff2?url';
+import Footer from '@/components/layout/Footer.astro';
+import Reveal from '@/components/layout/Reveal.astro';
+import Header from '@/components/navigation/Header.astro';
+import WhatsAppButton from '@/components/ui/WhatsAppButton.astro';
+import SEO, { type Props as SEOProps } from '@/components/seo/SEO.astro';
+import { url } from '@/lib/url';
+
+type Props = SEOProps;
+
+const seo = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" id="top" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>
+      (() => {
+        const root = document.documentElement;
+        let theme = null;
+        try {
+          theme = localStorage.getItem('theme');
+        } catch {}
+        if (theme !== 'light' && theme !== 'dark') {
+          theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        root.dataset.theme = theme;
+      })();
+    </script>
+    <meta name="theme-color" content="#ffffff" />
+    <script is:inline>
+      document.querySelector('meta[name="theme-color"]').content =
+        document.documentElement.dataset.theme === 'dark' ? '#0b0b0e' : '#ffffff';
+    </script>
+
+    <SEO {...seo} />
+
+    <link rel="icon" href={url('/favicon.ico')} sizes="32x32" />
+    <link rel="icon" href={url('/favicon.svg')} type="image/svg+xml" />
+    <link rel="apple-touch-icon" href={url('/apple-touch-icon.png')} />
+    <link rel="manifest" href={url('/site.webmanifest')} />
+    <link rel="sitemap" href={url('/sitemap-index.xml')} />
+    <link rel="preload" href={montserratLatin} as="font" type="font/woff2" crossorigin />
+    <meta name="generator" content={Astro.generator} />
+  </head>
+  <body class="min-h-dvh overflow-x-clip">
+    <a
+      href="#main"
+      class="fixed top-3 left-3 z-[100] -translate-y-24 rounded-lg bg-brand-strong px-4 py-2.5 text-sm font-semibold text-white shadow-lg transition-transform focus:translate-y-0"
+    >
+      Skip to content
+    </a>
+    <Header />
+    <main id="main" tabindex="-1" class="pt-16 outline-none md:pt-[4.5rem]">
+      <slot />
+    </main>
+    <Footer />
+    <WhatsAppButton />
+    <Reveal />
+  </body>
+</html>

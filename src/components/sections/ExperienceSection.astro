@@ -1,0 +1,25 @@
+---
+import Button from '@/components/ui/Button.astro';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import { url } from '@/lib/url';
+import ExperienceTimeline from './ExperienceTimeline.astro';
+---
+
+<section id="experience" class="section" aria-labelledby="experience-title">
+  <div class="container-x">
+    <div class="flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
+      <SectionHeading
+        id="experience-title"
+        eyebrow="05 — Experience"
+        title="From WordPress sites to full-stack platforms"
+        lead="Since 2020: an e-learning platform, a fact-checking organisation and a digital agency, where my work grew from WordPress builds into full-stack TypeScript platforms."
+      />
+      <div data-reveal>
+        <Button href={url('/experience/')} variant="secondary" icon="arrow-right">Full experience</Button>
+      </div>
+    </div>
+    <div class="mt-16">
+      <ExperienceTimeline variant="compact" kind="professional" />
+    </div>
+  </div>
+</section>

@@ -1,0 +1,67 @@
+---
+import Icon from '@/components/ui/Icon.astro';
+import { url } from '@/lib/url';
+
+interface Crumb {
+  name: string;
+  path: string;
+}
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  lead?: string;
+  breadcrumbs?: Crumb[];
+}
+
+const { eyebrow, title, lead, breadcrumbs = [] } = Astro.props;
+---
+
+<section class="relative isolate overflow-hidden border-b border-border">
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10">
+    <div class="bg-grid absolute inset-0"></div>
+    <div
+      class="animate-drift absolute -top-48 left-1/4 size-[32rem] rounded-full bg-[radial-gradient(circle,var(--glow-brand),transparent_65%)] blur-2xl"
+    >
+    </div>
+    <div class="bg-noise absolute inset-0"></div>
+  </div>
+  <div class="container-x py-14 sm:py-20 lg:py-24">
+    {
+      breadcrumbs.length > 0 && (
+        <nav aria-label="Breadcrumb" class="animate-rise mb-8" style="--i:0">
+          <ol class="flex flex-wrap items-center gap-1.5 text-xs font-medium text-fg-subtle">
+            <li>
+              <a href={url('/')} class="transition-colors hover:text-fg">
+                Home
+              </a>
+            </li>
+            {breadcrumbs.map((crumb, index) => (
+              <li class="flex items-center gap-1.5">
+                <Icon name="arrow-right" size={12} />
+                {index === breadcrumbs.length - 1 ? (
+                  <span aria-current="page" class="text-fg-muted">
+                    {crumb.name}
+                  </span>
+                ) : (
+                  <a href={url(crumb.path)} class="transition-colors hover:text-fg">
+                    {crumb.name}
+                  </a>
+                )}
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )
+    }
+    <p class="eyebrow animate-rise flex items-center gap-3" style="--i:1">
+      <span aria-hidden="true" class="h-px w-8 bg-gradient-to-r from-brand to-accent"></span>
+      {eyebrow}
+    </p>
+    <h1 class="animate-rise mt-5 max-w-4xl text-4xl font-extrabold tracking-[-0.035em] sm:text-5xl lg:text-6xl" style="--i:2">
+      {title}
+    </h1>
+    {lead && <p class="animate-rise mt-6 max-w-2xl text-base text-fg-muted sm:text-lg" style="--i:3">{lead}</p>}
+    <slot />
+  </div>
+</section>

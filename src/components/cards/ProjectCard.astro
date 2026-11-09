@@ -1,0 +1,105 @@
+---
+import { Image } from 'astro:assets';
+import Icon from '@/components/ui/Icon.astro';
+import { categoryLabel, type Project } from '@/data/projects';
+import { url } from '@/lib/url';
+import CodeCover from './CodeCover.astro';
+
+interface Props {
+  project: Project;
+  size?: 'default' | 'large';
+  eager?: boolean;
+  class?: string;
+  revealDelay?: number;
+}
+
+const { project, size = 'default', eager = false, class: className, revealDelay = 0 } = Astro.props;
+const href = url(`/projects/${project.slug}/`);
+const primary = project.categories[0];
+const sizes =
+  size === 'large'
+    ? '(min-width: 1024px) 760px, (min-width: 768px) 90vw, 100vw'
+    : '(min-width: 1024px) 380px, (min-width: 768px) 45vw, 100vw';
+---
+
+<article
+  class:list={[
+    'card group relative flex flex-col overflow-hidden transition-[transform,box-shadow,border-color] duration-300 ease-out hover:-translate-y-1 hover:border-border-strong hover:shadow-[var(--shadow-lg)]',
+    className,
+  ]}
+  data-reveal
+  style={`--reveal-delay:${revealDelay}`}
+  data-categories={project.categories.join(' ')}
+>
+  <div
+    class:list={[
+      'relative overflow-hidden border-b border-border bg-surface-2',
+      size === 'large' ? 'aspect-[16/10] lg:aspect-auto lg:min-h-[22rem] lg:flex-1' : 'aspect-[16/10]',
+    ]}
+  >
+    {
+      project.cover ? (
+        <>
+          <Image
+            src={project.cover.src}
+            alt={project.cover.alt}
+            widths={size === 'large' ? [480, 760, 1024, 1520] : [400, 600, 800]}
+            sizes={sizes}
+            fit="cover"
+            position="top"
+            loading={eager ? 'eager' : 'lazy'}
+            class="absolute inset-0 h-full w-full transition-transform duration-[900ms] ease-[var(--ease-out-expo)] group-hover:scale-[1.04]"
+          />
+          <div
+            aria-hidden="true"
+            class="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+          />
+          <span class="absolute top-3 left-3 rounded-full border border-white/20 bg-black/55 px-2.5 py-1 font-mono text-[0.6875rem] font-medium tracking-wide text-white backdrop-blur-md">
+            {categoryLabel(primary)}
+          </span>
+        </>
+      ) : (
+        <CodeCover project={project} class="transition-transform duration-[900ms] ease-[var(--ease-out-expo)] group-hover:scale-[1.02]" />
+      )
+    }
+  </div>
+
+  <div class:list={['flex flex-col', size === 'large' ? 'p-6 sm:p-7' : 'flex-1 p-5 sm:p-6']}>
+    <p class="font-mono text-[0.6875rem] tracking-wide text-fg-subtle uppercase">
+      {project.industry}{project.year && ` · ${project.year}`}
+    </p>
+    <h3 class:list={['mt-2 font-bold', size === 'large' ? 'text-xl sm:text-2xl' : 'text-lg']}>
+      <a href={href} class="outline-none after:absolute after:inset-0 after:rounded-[var(--radius-card)] focus-visible:after:outline-2 focus-visible:after:outline-offset-2 focus-visible:after:outline-brand-ink">
+        {project.title}
+      </a>
+    </h3>
+    <p class="mt-2 line-clamp-2 text-sm text-fg-muted">{project.summary}</p>
+    <ul class="mt-4 flex flex-wrap gap-1.5" aria-label="Technologies">
+      {
+        project.stack.slice(0, 3).map((tech) => (
+          <li class="rounded-md bg-surface-2 px-2 py-0.5 text-xs font-medium text-fg-muted">{tech}</li>
+        ))
+      }
+    </ul>
+    <div class="mt-auto flex items-center justify-between gap-3 pt-5">
+      <span class="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-ink" aria-hidden="true">
+        View project
+        <Icon name="arrow-right" size={16} class="transition-transform duration-200 group-hover:translate-x-1" />
+      </span>
+      {
+        project.liveUrl && (
+          <a
+            href={project.liveUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="relative z-10 inline-flex items-center gap-1 rounded-full border border-border px-3 py-1 text-xs font-medium text-fg-muted transition-colors hover:border-brand/50 hover:text-brand-ink"
+          >
+            Live site
+            <Icon name="arrow-up-right" size={14} />
+            <span class="sr-only">{`for ${project.title} (opens in a new tab)`}</span>
+          </a>
+        )
+      }
+    </div>
+  </div>
+</article>

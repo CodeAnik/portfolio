@@ -1,0 +1,123 @@
+---
+import { Image } from 'astro:assets';
+import portrait from '@/assets/profile/anik-khan-portrait.webp';
+import Button from '@/components/ui/Button.astro';
+import SocialLinks from '@/components/ui/SocialLinks.astro';
+import { profile } from '@/data/profile';
+import { liveClientSites, projects } from '@/data/projects';
+import { url } from '@/lib/url';
+
+const years = new Date().getFullYear() - profile.careerStartYear;
+const stats = [
+  { value: years, label: 'Years building for the web' },
+  { value: liveClientSites.length, label: 'Live client sites & platforms' },
+  { value: projects.length, label: 'Projects in this portfolio' },
+];
+---
+
+<section class="relative isolate overflow-hidden" aria-labelledby="hero-title">
+  <!-- Background: engineering grid, brand glows and grain -->
+  <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10">
+    <div class="bg-grid absolute inset-0"></div>
+    <div
+      class="animate-drift absolute -top-40 -left-32 size-[34rem] rounded-full bg-[radial-gradient(circle,var(--glow-brand),transparent_65%)] blur-2xl"
+    >
+    </div>
+    <div
+      class="animate-drift absolute top-24 -right-40 size-[30rem] rounded-full bg-[radial-gradient(circle,var(--glow-accent),transparent_65%)] blur-2xl [animation-delay:-8s]"
+    >
+    </div>
+    <div class="bg-noise absolute inset-0"></div>
+  </div>
+
+  <div class="container-x grid items-center gap-14 pt-12 pb-16 md:pt-16 lg:grid-cols-[1.15fr_0.85fr] lg:gap-10 lg:pt-20 lg:pb-24">
+    <div>
+      <h1 id="hero-title" class="animate-rise" style="--i:0">
+        <span class="block text-5xl font-extrabold tracking-[-0.04em] sm:text-6xl lg:text-7xl xl:text-[5.25rem]">
+          {profile.name}
+        </span>
+        <span class="mt-4 block text-2xl font-semibold tracking-tight text-fg-muted sm:text-3xl lg:text-[2.125rem]">
+          Full-Stack Developer <span class="text-gradient">using Agentic AI</span>
+        </span>
+      </h1>
+
+      <p class="animate-rise mt-7 max-w-xl text-base text-fg-muted sm:text-lg" style="--i:2">
+        {profile.tagline}
+      </p>
+
+      <div class="animate-rise mt-9 flex flex-wrap gap-3" style="--i:3">
+        <Button href={url(profile.resume.pdfPath)} variant="secondary" size="lg" icon="download" iconPosition="start">
+          Download Resume
+        </Button>
+        <Button href={url('/contact/')} variant="ghost" size="lg" icon="mail" iconPosition="start">Contact Me</Button>
+      </div>
+
+      <div class="animate-rise mt-10 flex flex-wrap items-center gap-x-6 gap-y-4" style="--i:4">
+        <SocialLinks size="sm" />
+      </div>
+    </div>
+
+    <!-- Portrait: the original gradient-ring identity, refined -->
+    <div class="animate-rise relative mx-auto w-full max-w-[22rem] sm:max-w-[26rem] lg:max-w-none" style="--i:2">
+      <div class="relative aspect-square">
+        <div aria-hidden="true" class="hero-ring absolute inset-[4%] rounded-full"></div>
+        <div aria-hidden="true" class="hero-disc absolute inset-[9%] rounded-full"></div>
+        <div class="hero-portrait absolute inset-x-[9%] bottom-[9%] top-[-6%] overflow-hidden">
+          <Image
+            src={portrait}
+            alt={`Portrait of ${profile.name}`}
+            widths={[360, 540, 720, 960]}
+            sizes="(min-width: 1024px) 440px, (min-width: 640px) 360px, 300px"
+            loading="eager"
+            fetchpriority="high"
+            class="absolute inset-x-0 bottom-0 mx-auto h-auto w-[92%] max-w-none"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-x pb-6">
+    <dl class="animate-rise grid grid-cols-3 divide-x divide-border rounded-[var(--radius-card)] border border-border bg-surface/70 backdrop-blur" style="--i:5">
+      {
+        stats.map((stat) => (
+          <div class="px-3 py-5 text-center sm:px-6 sm:py-6">
+            <dt class="text-[0.6875rem] leading-snug text-fg-subtle sm:text-sm">{stat.label}</dt>
+            <dd class="order-first font-display text-3xl font-bold tracking-tight text-fg sm:text-4xl">
+              {stat.value}
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</section>
+
+<style>
+  .hero-ring {
+    background: conic-gradient(from 210deg, #ffc107, #e95f32, #f41067, #ffc107);
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #000 calc(100% - 5px));
+    mask: radial-gradient(farthest-side, transparent calc(100% - 6px), #000 calc(100% - 5px));
+    animation: spin 28s linear infinite;
+  }
+  .hero-disc {
+    background:
+      radial-gradient(circle at 50% 30%, color-mix(in oklab, var(--brand) 22%, transparent), transparent 62%),
+      radial-gradient(circle at 70% 90%, color-mix(in oklab, var(--accent) 16%, transparent), transparent 55%),
+      var(--surface-2);
+  }
+  :global([data-theme='dark']) .hero-disc {
+    background:
+      radial-gradient(circle at 50% 30%, color-mix(in oklab, var(--brand) 38%, transparent), transparent 62%),
+      radial-gradient(circle at 70% 90%, color-mix(in oklab, var(--accent) 18%, transparent), transparent 55%),
+      #22222a;
+  }
+  /* The portrait sits inside the circle at the bottom and breaks out of it at the top. */
+  .hero-portrait {
+    border-radius: 0 0 50% 50% / 0 0 42% 42%;
+  }
+  dl > div {
+    display: flex;
+    flex-direction: column;
+  }
+</style>

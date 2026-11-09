@@ -1,0 +1,37 @@
+---
+// Scroll-reveal for elements marked with `data-reveal`. Content stays visible without JavaScript,
+// and anything already on screen is revealed immediately so there is no flash on load.
+---
+
+<script>
+  const root = document.documentElement;
+  const elements = Array.from(document.querySelectorAll<HTMLElement>('[data-reveal]'));
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (reduce || !('IntersectionObserver' in window)) {
+    elements.forEach((el) => el.classList.add('is-visible'));
+  } else {
+    const fold = window.innerHeight * 0.92;
+    const pending = elements.filter((el) => {
+      if (el.getBoundingClientRect().top < fold) {
+        el.classList.add('is-visible');
+        return false;
+      }
+      return true;
+    });
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      },
+      { rootMargin: '0px 0px -8% 0px', threshold: 0.08 },
+    );
+
+    pending.forEach((el) => observer.observe(el));
+    root.classList.add('reveal-ready');
+  }
+</script>

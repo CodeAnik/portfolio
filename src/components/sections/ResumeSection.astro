@@ -1,0 +1,109 @@
+---
+import Icon from '@/components/ui/Icon.astro';
+import { education } from '@/data/education';
+import { experience } from '@/data/experience';
+import { profile } from '@/data/profile';
+import { skillGroups } from '@/data/skills';
+import { url } from '@/lib/url';
+
+interface Props {
+  /** `full` adds the resume-style breakdown of skills, experience and education. */
+  variant?: 'compact' | 'full';
+}
+
+const { variant = 'compact' } = Astro.props;
+const coreSkills = skillGroups.flatMap((g) => g.skills.filter((s) => s.core).map((s) => s.name));
+---
+
+<section id="resume" class="section" aria-labelledby="resume-title">
+  <div class="container-x">
+    <div class="relative isolate overflow-hidden rounded-[1.5rem] border border-border bg-fg p-8 text-bg sm:p-12 lg:p-14" data-reveal>
+      <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10">
+        <div class="absolute -top-32 -left-24 size-96 rounded-full bg-[radial-gradient(circle,rgb(244_16_103/0.45),transparent_70%)]"></div>
+        <div class="absolute -right-24 -bottom-40 size-96 rounded-full bg-[radial-gradient(circle,rgb(255_193_7/0.28),transparent_70%)]"></div>
+        <div class="resume-grid absolute inset-0"></div>
+      </div>
+
+      <div class="grid gap-10 lg:grid-cols-[1.3fr_1fr] lg:items-center">
+        <div>
+          <p class="font-mono text-xs font-medium tracking-[0.18em] text-[#ff5c93] uppercase dark:text-brand-strong">Resume / CV</p>
+          <h2 id="resume-title" class="mt-4 text-3xl font-bold text-bg sm:text-4xl">The one-page version.</h2>
+          <p class="mt-5 max-w-xl text-base text-bg/70">{profile.summary}</p>
+        </div>
+        <div class="flex flex-col gap-3 sm:flex-row lg:flex-col lg:items-stretch xl:flex-row">
+          <a
+            href={url(profile.resume.pdfPath)}
+            class="inline-flex h-12 items-center justify-center gap-2 rounded-[var(--radius-control)] bg-brand-strong px-6 text-[0.9375rem] font-semibold text-white transition-all hover:-translate-y-px hover:bg-brand-hover"
+          >
+            <Icon name="download" size={18} />
+            Download Resume
+            <span class="sr-only">(PDF)</span>
+          </a>
+          <a
+            href={url(profile.resume.pagePath)}
+            class="inline-flex h-12 items-center justify-center gap-2 rounded-[var(--radius-control)] border border-bg/25 px-6 text-[0.9375rem] font-semibold text-bg transition-all hover:-translate-y-px hover:border-bg/50 hover:bg-bg/10"
+          >
+            <Icon name="eye" size={18} />
+            Open Resume
+          </a>
+        </div>
+      </div>
+
+      {
+        variant === 'full' && (
+          <div class="mt-12 grid gap-8 border-t border-bg/15 pt-10 md:grid-cols-3">
+            <div>
+              <h3 class="font-mono text-xs font-medium tracking-[0.18em] text-bg/60 uppercase">Core skills</h3>
+              <ul class="mt-4 flex flex-wrap gap-2">
+                {coreSkills.map((skill) => (
+                  <li class="rounded-md border border-bg/15 px-2.5 py-1 text-sm text-bg/85">{skill}</li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h3 class="font-mono text-xs font-medium tracking-[0.18em] text-bg/60 uppercase">Experience</h3>
+              <ul class="mt-4 space-y-3">
+                {experience.map((item) => (
+                  <li>
+                    <p class="text-sm font-semibold text-bg">{item.role}</p>
+                    <p class="text-sm text-bg/60">{item.company}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h3 class="font-mono text-xs font-medium tracking-[0.18em] text-bg/60 uppercase">Education</h3>
+              <ul class="mt-4 space-y-3">
+                {education.map((item) => (
+                  <li>
+                    <p class="text-sm font-semibold text-bg">
+                      {item.shortDegree} — {item.field}
+                    </p>
+                    <p class="text-sm text-bg/60">
+                      {item.institution}, {item.completed} · {item.result}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .resume-grid {
+    background-image:
+      linear-gradient(to right, rgb(255 255 255 / 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(255 255 255 / 0.05) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse at 30% 0%, #000, transparent 75%);
+  }
+  :global([data-theme='dark']) .resume-grid {
+    background-image:
+      linear-gradient(to right, rgb(0 0 0 / 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(0 0 0 / 0.06) 1px, transparent 1px);
+  }
+</style>

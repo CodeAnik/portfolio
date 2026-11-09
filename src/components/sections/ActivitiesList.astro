@@ -1,0 +1,24 @@
+---
+import Icon from '@/components/ui/Icon.astro';
+import { activities } from '@/data/activities';
+---
+
+<ol class="relative space-y-4">
+  {
+    activities.map((item, index) => (
+      <li class="card flex gap-5 p-5 sm:p-6" data-reveal style={`--reveal-delay:${index * 60}`}>
+        <span class="grid size-12 shrink-0 place-items-center rounded-xl bg-accent/15 text-accent-ink">
+          <Icon name={item.icon} size={22} />
+        </span>
+        <div class="min-w-0 flex-1">
+          <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+            <h3 class="text-base font-bold">{item.title}</h3>
+            <p class="font-mono text-xs text-fg-subtle">{item.date}</p>
+          </div>
+          <p class="mt-0.5 text-sm font-semibold text-brand-ink">{item.role}</p>
+          {item.description && <p class="mt-2 text-sm text-fg-muted">{item.description}</p>}
+        </div>
+      </li>
+    ))
+  }
+</ol>

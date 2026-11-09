@@ -1,0 +1,32 @@
+---
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import ActivitiesList from './ActivitiesList.astro';
+import EducationList from './EducationList.astro';
+
+interface Props {
+  eyebrow?: string;
+}
+
+const { eyebrow = '07 — Education & leadership' } = Astro.props;
+---
+
+<section id="education" class="section" aria-labelledby="education-title">
+  <div class="container-x">
+    <SectionHeading
+      id="education-title"
+      eyebrow={eyebrow}
+      title="Education, leadership and volunteering"
+      lead="A Computer Science & Engineering degree, a term leading the department’s career club, and organising national robotics competitions."
+    />
+    <div class="mt-14 grid gap-12 lg:grid-cols-2 lg:gap-10">
+      <div>
+        <h3 class="mb-6 font-mono text-xs font-medium tracking-[0.18em] text-fg-subtle uppercase">Education</h3>
+        <EducationList />
+      </div>
+      <div>
+        <h3 class="mb-6 font-mono text-xs font-medium tracking-[0.18em] text-fg-subtle uppercase">Leadership &amp; volunteering</h3>
+        <ActivitiesList />
+      </div>
+    </div>
+  </div>
+</section>

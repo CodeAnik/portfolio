@@ -1,0 +1,286 @@
+---
+import Icon from '@/components/ui/Icon.astro';
+import { profile } from '@/data/profile';
+import { CONTACT_LIMITS } from '../../../contact-api/src/validation';
+
+const endpoint = import.meta.env.PUBLIC_CONTACT_ENDPOINT ?? '';
+const field =
+  'block w-full rounded-[var(--radius-control)] border border-border bg-bg px-4 py-3 text-[0.9375rem] text-fg shadow-[var(--shadow-sm)] transition-[border-color,box-shadow] duration-200 placeholder:text-fg-subtle hover:border-border-strong focus:border-brand focus:shadow-[0_0_0_4px_var(--brand-soft)] focus:outline-none aria-[invalid=true]:border-[#e5484d] aria-[invalid=true]:focus:shadow-[0_0_0_4px_rgb(229_72_77/0.15)]';
+const label = 'mb-2 block text-sm font-semibold text-fg';
+const error = 'field-error mt-2 flex items-center gap-1.5 text-sm font-medium text-[#c62a2f] dark:text-[#ff8589]';
+---
+
+<div class="card relative p-6 sm:p-8" data-contact-root>
+  <form data-contact-form data-endpoint={endpoint} data-email={profile.email} novalidate aria-describedby="contact-form-note">
+    <div class="grid gap-5 sm:grid-cols-2">
+      <div>
+        <label for="contact-name" class={label}>Name</label>
+        <input
+          id="contact-name"
+          name="name"
+          type="text"
+          autocomplete="name"
+          required
+          minlength={CONTACT_LIMITS.name.min}
+          maxlength={CONTACT_LIMITS.name.max}
+          class={field}
+          placeholder="Your full name"
+          aria-describedby="contact-name-error"
+        />
+        <p id="contact-name-error" class={error} hidden></p>
+      </div>
+      <div>
+        <label for="contact-email" class={label}>Email</label>
+        <input
+          id="contact-email"
+          name="email"
+          type="email"
+          autocomplete="email"
+          inputmode="email"
+          required
+          maxlength={CONTACT_LIMITS.email.max}
+          class={field}
+          placeholder="name@company.com"
+          aria-describedby="contact-email-error"
+        />
+        <p id="contact-email-error" class={error} hidden></p>
+      </div>
+      <div class="sm:col-span-2">
+        <label for="contact-subject" class={label}>Subject</label>
+        <input
+          id="contact-subject"
+          name="subject"
+          type="text"
+          required
+          minlength={CONTACT_LIMITS.subject.min}
+          maxlength={CONTACT_LIMITS.subject.max}
+          class={field}
+          placeholder="Website, web app, e-commerce, job opportunity…"
+          aria-describedby="contact-subject-error"
+        />
+        <p id="contact-subject-error" class={error} hidden></p>
+      </div>
+      <div class="sm:col-span-2">
+        <div class="flex items-baseline justify-between gap-4">
+          <label for="contact-message" class={label}>Message</label>
+          <span class="font-mono text-xs text-fg-subtle" data-counter aria-hidden="true">0 / {CONTACT_LIMITS.message.max}</span>
+        </div>
+        <textarea
+          id="contact-message"
+          name="message"
+          rows="6"
+          required
+          minlength={CONTACT_LIMITS.message.min}
+          maxlength={CONTACT_LIMITS.message.max}
+          class:list={[field, 'min-h-40 resize-y']}
+          placeholder="Tell me about the project, the timeline and anything else that helps."
+          aria-describedby="contact-message-error"></textarea>
+        <p id="contact-message-error" class={error} hidden></p>
+      </div>
+    </div>
+
+    <!-- Honeypot: hidden from people and assistive tech, attractive to bots. -->
+    <div class="absolute -left-[9999px] h-px w-px overflow-hidden" aria-hidden="true">
+      <label for="contact-website">Website</label>
+      <input id="contact-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+    </div>
+
+    <div class="mt-7 flex flex-col-reverse items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <p id="contact-form-note" class="text-xs text-fg-subtle">All fields are required. Your details are only used to reply to you.</p>
+      <button
+        type="submit"
+        data-submit
+        class="group/btn inline-flex h-12 w-full items-center justify-center gap-2 rounded-[var(--radius-control)] bg-brand-strong px-6 text-[0.9375rem] font-semibold text-white shadow-[0_8px_24px_-10px_rgb(217_11_90/0.7)] transition-all duration-200 hover:-translate-y-px hover:bg-brand-hover active:scale-[0.98] disabled:pointer-events-none disabled:opacity-70 sm:w-auto"
+      >
+        <span class="submit-idle inline-flex items-center gap-2">
+          Send message
+          <Icon name="send" size={17} class="transition-transform group-hover/btn:translate-x-0.5" />
+        </span>
+        <span class="submit-loading hidden items-center gap-2">
+          <Icon name="loader-circle" size={17} class="animate-[spin_0.8s_linear_infinite]" />
+          Sending…
+        </span>
+      </button>
+    </div>
+
+    <div data-status class="mt-6 hidden rounded-[var(--radius-control)] border p-4 text-sm" tabindex="-1">
+      <div class="flex gap-3">
+        <span data-status-icon class="mt-0.5 shrink-0"></span>
+        <div>
+          <p data-status-title class="font-semibold"></p>
+          <p data-status-body class="mt-1"></p>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <template data-icon-success><Icon name="circle-check" size={20} /></template>
+  <template data-icon-error><Icon name="circle-alert" size={20} /></template>
+</div>
+
+<script>
+  import { CONTACT_LIMITS, validateContact, type ContactField } from '../../../contact-api/src/validation';
+
+  const root = document.querySelector<HTMLElement>('[data-contact-root]');
+  const form = root?.querySelector<HTMLFormElement>('[data-contact-form]');
+
+  if (root && form) {
+    const endpoint = form.dataset.endpoint?.trim() ?? '';
+    const ownerEmail = form.dataset.email ?? '';
+    const submit = form.querySelector<HTMLButtonElement>('[data-submit]')!;
+    const status = form.querySelector<HTMLElement>('[data-status]')!;
+    const counter = form.querySelector<HTMLElement>('[data-counter]');
+    const fields: ContactField[] = ['name', 'email', 'subject', 'message'];
+    const startedAt = Date.now();
+
+    const input = (name: ContactField) => form.elements.namedItem(name) as HTMLInputElement | HTMLTextAreaElement;
+    const values = () => Object.fromEntries(fields.map((f) => [f, input(f).value])) as Record<ContactField, string>;
+
+    const setFieldError = (name: ContactField, message?: string) => {
+      const el = input(name);
+      const errorEl = form.querySelector<HTMLElement>(`#contact-${name}-error`);
+      el.setAttribute('aria-invalid', message ? 'true' : 'false');
+      if (errorEl) {
+        errorEl.textContent = message ?? '';
+        errorEl.hidden = !message;
+      }
+    };
+
+    const showStatus = (
+      kind: 'success' | 'error' | 'info',
+      title: string,
+      body: string,
+      links?: { href: string; text: string },
+      moveFocus = true,
+    ) => {
+      const tones = {
+        success: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-800 dark:text-emerald-300',
+        error: 'border-[#e5484d]/30 bg-[#e5484d]/10 text-[#a51d22] dark:text-[#ff8589]',
+        info: 'border-brand/30 bg-brand-soft text-fg',
+      };
+      status.className = `mt-6 rounded-[var(--radius-control)] border p-4 text-sm ${tones[kind]}`;
+      status.setAttribute('role', kind === 'error' ? 'alert' : 'status');
+      const icon = root.querySelector<HTMLTemplateElement>(kind === 'success' ? '[data-icon-success]' : '[data-icon-error]');
+      status.querySelector('[data-status-icon]')!.replaceChildren(icon ? icon.content.cloneNode(true) : '');
+      status.querySelector('[data-status-title]')!.textContent = title;
+      const bodyEl = status.querySelector('[data-status-body]')!;
+      bodyEl.textContent = body;
+      if (links) {
+        const a = document.createElement('a');
+        a.href = links.href;
+        a.textContent = links.text;
+        a.className = 'font-semibold underline underline-offset-4';
+        bodyEl.append(' ', a);
+      }
+      if (moveFocus) {
+        status.focus({ preventScroll: true });
+        status.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      }
+    };
+
+    const setLoading = (loading: boolean) => {
+      submit.disabled = loading;
+      form.setAttribute('aria-busy', String(loading));
+      submit.querySelector('.submit-idle')?.classList.toggle('hidden', loading);
+      submit.querySelector('.submit-loading')?.classList.toggle('hidden', !loading);
+      submit.querySelector('.submit-loading')?.classList.toggle('inline-flex', loading);
+    };
+
+    const mailtoLink = (v: Record<ContactField, string>) =>
+      `mailto:${ownerEmail}?subject=${encodeURIComponent(v.subject || 'Portfolio enquiry')}&body=${encodeURIComponent(
+        `${v.message}\n\n— ${v.name} (${v.email})`,
+      )}`;
+
+    // Validate a field once the visitor leaves it, then live as they correct it.
+    const touched = new Set<ContactField>();
+    fields.forEach((name) => {
+      const el = input(name);
+      el.addEventListener('blur', () => {
+        if (!el.value.trim()) return;
+        touched.add(name);
+        const result = validateContact(values());
+        setFieldError(name, result.ok ? undefined : result.errors[name]);
+      });
+      el.addEventListener('input', () => {
+        if (!touched.has(name)) return;
+        const result = validateContact(values());
+        setFieldError(name, result.ok ? undefined : result.errors[name]);
+      });
+    });
+
+    const messageEl = input('message');
+    const updateCounter = () => {
+      if (counter) counter.textContent = `${messageEl.value.length} / ${CONTACT_LIMITS.message.max}`;
+    };
+    messageEl.addEventListener('input', updateCounter);
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      status.classList.add('hidden');
+
+      const v = values();
+      const result = validateContact(v);
+      fields.forEach((name) => {
+        touched.add(name);
+        setFieldError(name, result.ok ? undefined : result.errors[name]);
+      });
+      if (!result.ok) {
+        const first = fields.find((f) => result.errors[f]);
+        if (first) input(first).focus();
+        // Keep focus on the first invalid field; the alert role still announces the summary.
+        showStatus('error', 'Please check the form', 'Some fields need attention before the message can be sent.', undefined, false);
+        return;
+      }
+
+      // No API configured for this build: hand the message to the visitor's email app.
+      if (!endpoint) {
+        window.location.href = mailtoLink(v);
+        showStatus('info', 'Opening your email app', 'Your message is ready to send from your own email. If nothing opened, write to me at', {
+          href: `mailto:${ownerEmail}`,
+          text: ownerEmail,
+        });
+        return;
+      }
+
+      setLoading(true);
+      const controller = new AbortController();
+      const timeout = window.setTimeout(() => controller.abort(), 15_000);
+      try {
+        const honeypot = (form.elements.namedItem('website') as HTMLInputElement | null)?.value ?? '';
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...result.data, website: honeypot, startedAt }),
+          signal: controller.signal,
+        });
+        const data = (await response.json().catch(() => ({}))) as {
+          ok?: boolean;
+          message?: string;
+          error?: string;
+          fields?: Partial<Record<ContactField, string>>;
+        };
+
+        if (response.ok && data.ok) {
+          form.reset();
+          touched.clear();
+          fields.forEach((f) => setFieldError(f));
+          updateCounter();
+          showStatus('success', 'Message sent', data.message ?? 'Thanks — I’ll get back to you soon.');
+          return;
+        }
+
+        if (data.fields) fields.forEach((f) => setFieldError(f, data.fields?.[f]));
+        const fallback = response.status === 429 ? 'You’ve sent several messages in a short time. Please try again later, or email me at' : 'Something went wrong on my side. Please try again, or email me at';
+        showStatus('error', data.error ?? 'Message not sent', data.fields ? 'Please correct the highlighted fields.' : fallback, data.fields ? undefined : { href: mailtoLink(v), text: ownerEmail });
+      } catch {
+        showStatus('error', 'Connection problem', 'The message could not reach the server. Check your connection and try again, or email me at', {
+          href: mailtoLink(v),
+          text: ownerEmail,
+        });
+      } finally {
+        window.clearTimeout(timeout);
+        setLoading(false);
+      }
+    });
+  }
+</script>

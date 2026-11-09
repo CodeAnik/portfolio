@@ -1,0 +1,65 @@
+---
+import { profile } from '@/data/profile';
+import Icon from './Icon.astro';
+
+const href = `${profile.whatsapp.href}?text=${encodeURIComponent(profile.whatsapp.message)}`;
+---
+
+<a
+  href={href}
+  target="_blank"
+  rel="noopener noreferrer"
+  class="whatsapp-fab group fixed right-4 bottom-4 z-40 flex items-center gap-3 print:hidden sm:right-6 sm:bottom-6"
+  aria-label="Chat with Anik on WhatsApp (opens in a new tab)"
+>
+  <span
+    class="whatsapp-fab__label pointer-events-none hidden rounded-full border border-border bg-surface px-3.5 py-2 text-sm font-semibold text-fg shadow-[var(--shadow-md)] sm:block"
+    aria-hidden="true"
+  >
+    Chat on WhatsApp
+  </span>
+  <span class="relative grid size-14 place-items-center rounded-full bg-[#16a34a] text-white shadow-[0_10px_30px_-8px_rgb(22_163_74/0.65)] transition-[transform,background-color] duration-200 group-hover:-translate-y-0.5 group-hover:bg-[#15803d] group-active:scale-95">
+    <span class="whatsapp-fab__pulse absolute inset-0 rounded-full bg-[#16a34a]" aria-hidden="true"></span>
+    <Icon name="whatsapp" size={28} class="relative" />
+  </span>
+</a>
+
+<style>
+  .whatsapp-fab {
+    animation: rise 0.6s var(--ease-out-expo) 1.2s both;
+  }
+  .whatsapp-fab:focus-visible {
+    outline: none;
+  }
+  .whatsapp-fab:focus-visible > span:last-child {
+    outline: 3px solid var(--brand-ink);
+    outline-offset: 3px;
+  }
+  .whatsapp-fab__label {
+    opacity: 0;
+    transform: translateX(8px);
+    transition:
+      opacity 0.2s ease,
+      transform 0.3s var(--ease-out-expo);
+  }
+  .whatsapp-fab:hover .whatsapp-fab__label,
+  .whatsapp-fab:focus-visible .whatsapp-fab__label {
+    opacity: 1;
+    transform: none;
+  }
+  .whatsapp-fab__pulse {
+    animation: whatsapp-pulse 2.8s ease-out 2s infinite;
+    opacity: 0;
+  }
+  @keyframes whatsapp-pulse {
+    0% {
+      opacity: 0.45;
+      transform: scale(1);
+    }
+    70%,
+    100% {
+      opacity: 0;
+      transform: scale(1.6);
+    }
+  }
+</style>

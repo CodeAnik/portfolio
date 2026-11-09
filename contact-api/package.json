@@ -1,0 +1,25 @@
+{
+  "name": "anik-khan-contact-api",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Serverless contact-form endpoint for codeanik.github.io/portfolio. Sends mail through Gmail SMTP.",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "tsx watch server.ts",
+    "start": "tsx server.ts",
+    "test": "tsx --test tests/*.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "nodemailer": "^10.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.19.2",
+    "@types/nodemailer": "^8.0.2",
+    "tsx": "^4.23.15",
+    "typescript": "^6.0.3"
+  }
+}

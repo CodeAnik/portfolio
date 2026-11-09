@@ -1,0 +1,63 @@
+---
+import Icon from '@/components/ui/Icon.astro';
+import { experience, type Experience } from '@/data/experience';
+
+interface Props {
+  /** `compact` shows the summary only; `full` lists every responsibility. */
+  variant?: 'compact' | 'full';
+  kind?: Experience['kind'];
+}
+
+const { variant = 'full', kind } = Astro.props;
+const items = kind ? experience.filter((e) => e.kind === kind) : experience;
+---
+
+<ol class="relative">
+  {
+    items.map((item, index) => (
+      <li class="relative grid gap-4 pb-12 pl-10 last:pb-0 md:grid-cols-[14rem_1fr] md:gap-10 md:pl-0" data-reveal style={`--reveal-delay:${index * 60}`}>
+        {/* Timeline rail and marker */}
+        <span aria-hidden="true" class="absolute top-2 bottom-0 left-[0.6875rem] w-px bg-border md:left-[15.6875rem]" />
+        <span
+          aria-hidden="true"
+          class="absolute top-1.5 left-0 grid size-6 place-items-center rounded-full border border-border bg-bg md:left-[15rem]"
+        >
+          <span class:list={['size-2.5 rounded-full', index === 0 ? 'bg-brand shadow-[0_0_0_4px_var(--brand-soft)]' : 'bg-accent']} />
+        </span>
+
+        <div class="min-w-0 md:pt-1 md:text-right">
+          <p class="font-display text-base font-bold text-fg">{item.company}</p>
+          <p class="text-sm text-fg-subtle">{item.companyType}</p>
+          <p class="mt-1 font-mono text-xs text-fg-subtle">{item.period}</p>
+          {item.kind === 'freelance' && (
+            <p class="mt-2 inline-flex rounded-full bg-accent/15 px-2.5 py-0.5 text-xs font-medium text-accent-ink">Freelance</p>
+          )}
+        </div>
+
+        <div class:list={['card min-w-0 p-6 sm:p-7 md:ml-10', variant === 'compact' && 'sm:p-6']}>
+          <h3 class="flex items-center gap-2 text-lg font-bold">
+            <Icon name="briefcase" size={18} class="text-brand-ink" />
+            {item.role}
+          </h3>
+          {item.location && <p class="mt-1 text-xs text-fg-subtle">{item.location}</p>}
+          <p class="mt-2 text-sm text-fg-muted">{item.summary}</p>
+          {variant === 'full' && (
+            <ul class="mt-5 space-y-2.5">
+              {item.responsibilities.map((r) => (
+                <li class="flex gap-3 text-sm text-fg-muted">
+                  <Icon name="check" size={16} class="mt-0.5 text-brand-ink" strokeWidth={2.25} />
+                  <span class="min-w-0 [overflow-wrap:anywhere]">{r}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+          <ul class="mt-5 flex flex-wrap gap-1.5" aria-label="Focus areas">
+            {item.focus.map((f) => (
+              <li class="rounded-md bg-surface-2 px-2 py-0.5 text-xs font-medium text-fg-muted">{f}</li>
+            ))}
+          </ul>
+        </div>
+      </li>
+    ))
+  }
+</ol>

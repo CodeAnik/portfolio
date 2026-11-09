@@ -1,0 +1,112 @@
+---
+import Icon from '@/components/ui/Icon.astro';
+---
+
+<button
+  type="button"
+  data-theme-toggle
+  class="relative grid size-10 place-items-center overflow-hidden rounded-full border border-border bg-surface text-fg-muted transition-colors duration-200 hover:border-border-strong hover:text-fg"
+  aria-label="Switch to dark theme"
+  title="Toggle theme"
+>
+  <span class="theme-icon theme-icon--sun"><Icon name="sun" size={18} /></span>
+  <span class="theme-icon theme-icon--moon"><Icon name="moon" size={18} /></span>
+</button>
+
+<style>
+  .theme-icon {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    transition:
+      transform 0.5s var(--ease-out-expo),
+      opacity 0.3s ease;
+  }
+  .theme-icon--moon {
+    transform: translateY(120%) rotate(-40deg);
+    opacity: 0;
+  }
+  :global([data-theme='dark']) .theme-icon--sun {
+    transform: translateY(-120%) rotate(40deg);
+    opacity: 0;
+  }
+  :global([data-theme='dark']) .theme-icon--moon {
+    transform: none;
+    opacity: 1;
+  }
+</style>
+
+<script>
+  const root = document.documentElement;
+  const media = window.matchMedia('(prefers-color-scheme: dark)');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  type Theme = 'light' | 'dark';
+
+  function storedTheme(): Theme | null {
+    try {
+      const value = localStorage.getItem('theme');
+      return value === 'light' || value === 'dark' ? value : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function syncUi(theme: Theme) {
+    document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach((button) => {
+      button.setAttribute('aria-label', theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme');
+    });
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#0b0b0e' : '#ffffff');
+  }
+
+  function setTheme(theme: Theme, origin?: { x: number; y: number }) {
+    const apply = () => {
+      root.dataset.theme = theme;
+      syncUi(theme);
+    };
+
+    if (reducedMotion.matches) {
+      apply();
+      return;
+    }
+
+    if (origin && typeof document.startViewTransition === 'function') {
+      const radius = Math.hypot(Math.max(origin.x, innerWidth - origin.x), Math.max(origin.y, innerHeight - origin.y));
+      const transition = document.startViewTransition(apply);
+      transition.ready
+        .then(() => {
+          root.animate(
+            { clipPath: [`circle(0px at ${origin.x}px ${origin.y}px)`, `circle(${radius}px at ${origin.x}px ${origin.y}px)`] },
+            { duration: 550, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', pseudoElement: '::view-transition-new(root)' },
+          );
+        })
+        .catch(() => {});
+      return;
+    }
+
+    root.classList.add('theme-transition');
+    apply();
+    window.setTimeout(() => root.classList.remove('theme-transition'), 400);
+  }
+
+  syncUi((root.dataset.theme as Theme) ?? 'light');
+
+  document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const next: Theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+      try {
+        localStorage.setItem('theme', next);
+      } catch {
+        /* storage unavailable (private mode) — the choice still applies for this page view */
+      }
+      const rect = button.getBoundingClientRect();
+      setTheme(next, { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 });
+    });
+  });
+
+  // Follow the operating system until the visitor makes an explicit choice.
+  media.addEventListener('change', (event) => {
+    if (!storedTheme()) setTheme(event.matches ? 'dark' : 'light');
+  });
+</script>

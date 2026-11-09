@@ -1,0 +1,33 @@
+---
+import Hero from '@/components/hero/Hero.astro';
+import AboutSection from '@/components/sections/AboutSection.astro';
+import ContactSection from '@/components/sections/ContactSection.astro';
+import EducationSection from '@/components/sections/EducationSection.astro';
+import ExperienceSection from '@/components/sections/ExperienceSection.astro';
+import FeaturedProjects from '@/components/sections/FeaturedProjects.astro';
+import ResumeSection from '@/components/sections/ResumeSection.astro';
+import ServicesSection from '@/components/sections/ServicesSection.astro';
+import SkillsSection from '@/components/sections/SkillsSection.astro';
+import TechMarquee from '@/components/sections/TechMarquee.astro';
+import WorkflowSection from '@/components/sections/WorkflowSection.astro';
+import { profile } from '@/data/profile';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title={`${profile.name} — Full-Stack Developer using Agentic AI`}
+  description="Md. Anik Khan builds complete websites and web applications, from WordPress and WooCommerce to React, Next.js and custom backends, using agentic AI workflows and hands-on technical expertise."
+  type="profile"
+>
+  <Hero />
+  <TechMarquee />
+  <AboutSection />
+  <ServicesSection />
+  <WorkflowSection />
+  <SkillsSection />
+  <ExperienceSection />
+  <FeaturedProjects />
+  <EducationSection />
+  <ResumeSection />
+  <ContactSection />
+</BaseLayout>

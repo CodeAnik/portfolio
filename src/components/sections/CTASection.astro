@@ -1,0 +1,36 @@
+---
+import Button from '@/components/ui/Button.astro';
+import { profile } from '@/data/profile';
+import { url } from '@/lib/url';
+
+interface Props {
+  title?: string;
+  body?: string;
+}
+
+const {
+  title = 'Have a website in mind?',
+  body = 'Tell me about the project — a web application, a WordPress or WooCommerce build, or ongoing maintenance. I reply to every message.',
+} = Astro.props;
+---
+
+<section class="section" aria-labelledby="cta-title">
+  <div class="container-x">
+    <div class="card relative isolate overflow-hidden px-6 py-14 text-center sm:px-12 sm:py-20" data-reveal>
+      <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10">
+        <div class="bg-grid absolute inset-0"></div>
+        <div
+          class="animate-drift absolute top-0 left-1/2 size-[30rem] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,var(--glow-brand),transparent_65%)] blur-2xl"
+        >
+        </div>
+      </div>
+      <p class="eyebrow">{profile.availability}</p>
+      <h2 id="cta-title" class="mx-auto mt-4 max-w-2xl text-3xl font-bold sm:text-4xl lg:text-5xl">{title}</h2>
+      <p class="mx-auto mt-5 max-w-xl text-base text-fg-muted sm:text-lg">{body}</p>
+      <div class="mt-9 flex flex-wrap justify-center gap-3">
+        <Button href={url('/contact/')} size="lg" icon="arrow-right">Start a conversation</Button>
+        <Button href={`mailto:${profile.email}`} variant="secondary" size="lg" icon="mail" iconPosition="start">{profile.email}</Button>
+      </div>
+    </div>
+  </div>
+</section>

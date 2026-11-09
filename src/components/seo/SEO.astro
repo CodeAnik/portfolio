@@ -1,0 +1,178 @@
+---
+import { getImage } from 'astro:assets';
+import avatar from '@/assets/profile/anik-khan-avatar.webp';
+import { activities } from '@/data/activities';
+import { education } from '@/data/education';
+import { profile } from '@/data/profile';
+import { socialLinks } from '@/data/social';
+import { absoluteUrl, url } from '@/lib/url';
+
+export interface Breadcrumb {
+  name: string;
+  path: string;
+}
+
+export interface Props {
+  title: string;
+  description: string;
+  /** Path (relative to base) or absolute URL of the share image. */
+  image?: string;
+  imageAlt?: string;
+  type?: 'website' | 'profile';
+  noindex?: boolean;
+  breadcrumbs?: Breadcrumb[];
+  /** Extra JSON-LD nodes merged into the page graph. */
+  schema?: Record<string, unknown>[];
+}
+
+const {
+  title,
+  description,
+  image = '/og/anik-khan-og.png',
+  imageAlt = `${profile.name} — ${profile.role}`,
+  type = 'website',
+  noindex = false,
+  breadcrumbs = [],
+  schema = [],
+} = Astro.props;
+
+const site = Astro.site;
+const siteRoot = absoluteUrl('/', site);
+const canonical = new URL(Astro.url.pathname, site).href;
+const imageUrl = image.startsWith('http') ? image : new URL(image.startsWith(import.meta.env.BASE_URL) ? image : url(image), site).href;
+const fullTitle = title.includes(profile.name) ? title : `${title} | ${profile.name}`;
+
+const profileImage = await getImage({ src: avatar, width: 400, format: 'jpg' });
+const personId = `${siteRoot}#person`;
+const websiteId = `${siteRoot}#website`;
+const pageId = `${canonical}#webpage`;
+
+const university = education[0];
+const person = {
+  '@type': 'Person',
+  '@id': personId,
+  name: profile.name,
+  alternateName: profile.shortName,
+  givenName: profile.givenName,
+  familyName: profile.familyName,
+  jobTitle: profile.jobTitle,
+  description: profile.summary,
+  url: siteRoot,
+  image: new URL(profileImage.src, site).href,
+  email: `mailto:${profile.email}`,
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: profile.location.city,
+    addressCountry: profile.location.countryCode,
+  },
+  alumniOf: university
+    ? { '@type': 'CollegeOrUniversity', name: university.institution }
+    : undefined,
+  knowsAbout: [
+    'Full-stack web development',
+    'TypeScript',
+    'JavaScript',
+    'React',
+    'Next.js',
+    'Astro',
+    'Node.js',
+    'Express',
+    'REST APIs',
+    'PostgreSQL',
+    'Prisma',
+    'MySQL',
+    'WordPress',
+    'WordPress plugin development',
+    'WooCommerce',
+    'PHP',
+    'Cloudflare',
+    'AI-assisted software development',
+  ],
+  memberOf: activities
+    .filter((a) => a.role === 'President')
+    .map((a) => ({ '@type': 'Organization', name: a.title })),
+  sameAs: socialLinks.map((s) => s.href),
+};
+
+const graph: Record<string, unknown>[] = [
+  person,
+  {
+    '@type': 'WebSite',
+    '@id': websiteId,
+    url: siteRoot,
+    name: `${profile.name} — Portfolio`,
+    description: profile.summary,
+    inLanguage: 'en',
+    publisher: { '@id': personId },
+  },
+  {
+    '@type': type === 'profile' ? 'ProfilePage' : 'WebPage',
+    '@id': pageId,
+    url: canonical,
+    name: fullTitle,
+    description,
+    inLanguage: 'en',
+    isPartOf: { '@id': websiteId },
+    about: { '@id': personId },
+    primaryImageOfPage: { '@type': 'ImageObject', url: imageUrl },
+    ...(type === 'profile' ? { mainEntity: { '@id': personId } } : {}),
+    ...(breadcrumbs.length ? { breadcrumb: { '@id': `${canonical}#breadcrumb` } } : {}),
+  },
+];
+
+if (breadcrumbs.length) {
+  graph.push({
+    '@type': 'BreadcrumbList',
+    '@id': `${canonical}#breadcrumb`,
+    itemListElement: [{ name: 'Home', path: '/' }, ...breadcrumbs].map((crumb, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: crumb.name,
+      item: absoluteUrl(crumb.path, site),
+    })),
+  });
+}
+
+graph.push(...schema);
+
+const jsonLd = JSON.stringify({ '@context': 'https://schema.org', '@graph': graph }).replace(/</g, '\\u003c');
+---
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+<meta
+  name="robots"
+  content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'}
+/>
+<meta name="author" content={profile.name} />
+
+<meta property="og:type" content={type} />
+<meta property="og:site_name" content={`${profile.name} — Portfolio`} />
+<meta property="og:locale" content="en_US" />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={imageUrl} />
+<meta property="og:image:alt" content={imageAlt} />
+{
+  !image.startsWith('http') && image === '/og/anik-khan-og.png' && (
+    <>
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:image:type" content="image/png" />
+    </>
+  )
+}
+{type === 'profile' && <meta property="profile:first_name" content={profile.givenName} />}
+{type === 'profile' && <meta property="profile:last_name" content={profile.familyName} />}
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content="@code_anik" />
+<meta name="twitter:creator" content="@code_anik" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={imageUrl} />
+<meta name="twitter:image:alt" content={imageAlt} />
+
+<script is:inline type="application/ld+json" set:html={jsonLd} />

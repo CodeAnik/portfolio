@@ -1,0 +1,72 @@
+---
+import Icon from '@/components/ui/Icon.astro';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import { skillGroups } from '@/data/skills';
+
+interface Props {
+  eyebrow?: string;
+}
+
+const { eyebrow = '04 — Skills' } = Astro.props;
+// Row pattern on large screens: 2 wide, 3 narrow, 2 wide.
+const lgSpan = (index: number) => (index < 2 || index >= 5 ? 'lg:col-span-3' : 'lg:col-span-2');
+const lastOdd = (index: number) => index === skillGroups.length - 1 && skillGroups.length % 2 === 1;
+---
+
+<section id="skills" class="section" aria-labelledby="skills-title">
+  <div class="container-x">
+    <div class="flex flex-col justify-between gap-8 lg:flex-row lg:items-end">
+      <SectionHeading
+        id="skills-title"
+        eyebrow={eyebrow}
+        title="Skills I can defend in an interview"
+        lead="I build with full-stack TypeScript, WordPress and WooCommerce, and use agentic AI workflows to work efficiently across all three."
+      />
+      <p class="flex items-center gap-2 text-sm text-fg-muted" data-reveal>
+        <span class="size-2 rounded-full bg-brand" aria-hidden="true"></span>
+        Core skill — used in recent production work
+      </p>
+    </div>
+
+    <div class="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-6">
+      {
+        skillGroups.map((group, index) => (
+          <article
+            class:list={['card group relative overflow-hidden p-6 sm:p-7', lgSpan(index), lastOdd(index) && 'md:col-span-2']}
+            data-reveal
+            style={`--reveal-delay:${index * 70}`}
+          >
+            <div class="flex items-start justify-between gap-4">
+              <div>
+                <h3 class="text-lg font-bold">{group.title}</h3>
+                <p class="mt-1.5 text-sm text-fg-muted">{group.description}</p>
+              </div>
+              <span class="grid size-11 shrink-0 place-items-center rounded-xl bg-brand-soft text-brand-ink">
+                <Icon name={group.icon} size={20} />
+              </span>
+            </div>
+            <ul class="mt-6 flex flex-wrap gap-2">
+              {group.skills.map((skill) => (
+                <li
+                  class:list={[
+                    'inline-flex items-center gap-2 rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors',
+                    skill.core ? 'border-brand/30 bg-brand-soft/60 text-fg' : 'border-border bg-surface-2/60 text-fg-muted',
+                  ]}
+                >
+                  {skill.icon && <Icon name={skill.icon} size={15} class={skill.core ? 'text-brand-ink' : 'text-fg-subtle'} />}
+                  {skill.name}
+                  {skill.core && (
+                    <>
+                      <span class="size-1.5 rounded-full bg-brand" aria-hidden="true" />
+                      <span class="sr-only">(core skill)</span>
+                    </>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>

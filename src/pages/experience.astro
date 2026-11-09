@@ -1,0 +1,51 @@
+---
+import PageHeader from '@/components/layout/PageHeader.astro';
+import CTASection from '@/components/sections/CTASection.astro';
+import EducationSection from '@/components/sections/EducationSection.astro';
+import ExperienceTimeline from '@/components/sections/ExperienceTimeline.astro';
+import ResumeSection from '@/components/sections/ResumeSection.astro';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+const breadcrumbs = [{ name: 'Experience', path: '/experience/' }];
+---
+
+<BaseLayout
+  title="Experience — Full-Stack Web Developer at Dgency"
+  description="Experience of Md. Anik Khan: Web Developer at Dgency (2023–present) building TypeScript platforms and WooCommerce plugins, plus Rumor Scanner Bangladesh and Bizuz."
+  breadcrumbs={breadcrumbs}
+>
+  <PageHeader
+    eyebrow="Experience"
+    title="Where I’ve built platforms, plugins and websites."
+    lead="A digital agency, a fact-checking organisation, an e-learning platform and freelance clients — most recent first."
+    breadcrumbs={breadcrumbs}
+  />
+
+  <section class="section" aria-labelledby="professional-title">
+    <div class="container-x">
+      <SectionHeading id="professional-title" eyebrow="Professional" title="Professional experience" />
+      <div class="mt-14">
+        <ExperienceTimeline kind="professional" />
+      </div>
+    </div>
+  </section>
+
+  <section class="section border-y border-border bg-bg-subtle" aria-labelledby="freelance-title">
+    <div class="container-x">
+      <SectionHeading
+        id="freelance-title"
+        eyebrow="Freelance"
+        title="Freelance & contract work"
+        lead="Web development, IT project work and design for clients on Fiverr and Upwork and for independent organisations."
+      />
+      <div class="mt-14">
+        <ExperienceTimeline kind="freelance" />
+      </div>
+    </div>
+  </section>
+
+  <EducationSection eyebrow="Education & leadership" />
+  <ResumeSection />
+  <CTASection />
+</BaseLayout>

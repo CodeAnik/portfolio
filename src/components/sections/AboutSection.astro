@@ -1,0 +1,70 @@
+---
+import { Image } from 'astro:assets';
+import avatar from '@/assets/profile/anik-khan-avatar.webp';
+import Button from '@/components/ui/Button.astro';
+import Icon from '@/components/ui/Icon.astro';
+import SectionHeading from '@/components/ui/SectionHeading.astro';
+import type { IconName } from '@/components/ui/icons';
+import { education } from '@/data/education';
+import { experience } from '@/data/experience';
+import { profile } from '@/data/profile';
+import { url } from '@/lib/url';
+
+const degree = education[0];
+const current = experience[0];
+const facts: { icon: IconName; label: string; value: string }[] = [
+  { icon: 'briefcase', label: 'Current role', value: current ? `${current.role}, ${current.company}` : profile.jobTitle },
+  { icon: 'graduation-cap', label: 'Education', value: degree ? `${degree.shortDegree} in CSE, ${degree.institution}` : '' },
+  { icon: 'map-pin', label: 'Based in', value: profile.location.label },
+  { icon: 'sparkles', label: 'Focus', value: 'TypeScript, React, Next.js, Node.js, WordPress' },
+];
+---
+
+<section id="about" class="section" aria-labelledby="about-title">
+  <div class="container-x grid gap-14 lg:grid-cols-12 lg:gap-16">
+    <div class="lg:col-span-5">
+      <div class="card relative overflow-hidden p-6 sm:p-8" data-reveal>
+        <div aria-hidden="true" class="absolute -top-24 -right-24 size-64 rounded-full bg-[radial-gradient(circle,var(--glow-brand),transparent_70%)]"></div>
+        <div class="relative flex items-center gap-5">
+          <Image
+            src={avatar}
+            alt={`${profile.name} profile photo`}
+            widths={[96, 192]}
+            sizes="96px"
+            class="size-20 rounded-full sm:size-24"
+          />
+          <div>
+            <p class="font-display text-xl font-bold">{profile.name}</p>
+            <p class="text-sm text-fg-muted">{profile.role}</p>
+          </div>
+        </div>
+        <dl class="relative mt-8 space-y-5">
+          {
+            facts.map((fact) => (
+              <div class="flex gap-4">
+                <span class="grid size-10 shrink-0 place-items-center rounded-xl border border-border bg-surface-2 text-brand-ink">
+                  <Icon name={fact.icon} size={18} />
+                </span>
+                <div>
+                  <dt class="text-xs font-medium tracking-wide text-fg-subtle uppercase">{fact.label}</dt>
+                  <dd class="mt-0.5 text-sm font-medium text-fg">{fact.value}</dd>
+                </div>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+    </div>
+
+    <div class="lg:col-span-7">
+      <SectionHeading id="about-title" eyebrow="01 — About" title="Real fundamentals, modern tools." />
+      <div class="mt-8 space-y-5 text-base text-fg-muted sm:text-lg" data-reveal>
+        {profile.about.filter((_, i) => i !== 1).map((paragraph) => <p>{paragraph}</p>)}
+      </div>
+      <div class="mt-9 flex flex-wrap gap-3" data-reveal>
+        <Button href={url('/about/')} variant="secondary" icon="arrow-right">More about me</Button>
+        <Button href={url('/experience/')} variant="ghost" icon="arrow-right">Experience</Button>
+      </div>
+    </div>
+  </div>
+</section>

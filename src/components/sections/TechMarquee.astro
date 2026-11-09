@@ -1,0 +1,64 @@
+---
+import Icon from '@/components/ui/Icon.astro';
+import type { IconName } from '@/components/ui/icons';
+
+const tech: { name: string; icon: IconName }[] = [
+  { name: 'TypeScript', icon: 'typescript' },
+  { name: 'React', icon: 'react' },
+  { name: 'Next.js', icon: 'nextdotjs' },
+  { name: 'Node.js', icon: 'nodedotjs' },
+  { name: 'Express', icon: 'express' },
+  { name: 'PostgreSQL', icon: 'postgresql' },
+  { name: 'Prisma', icon: 'prisma' },
+  { name: 'Astro', icon: 'astro' },
+  { name: 'Tailwind CSS', icon: 'tailwindcss' },
+  { name: 'Cloudflare', icon: 'cloudflare' },
+  { name: 'WordPress', icon: 'wordpress' },
+  { name: 'WooCommerce', icon: 'woocommerce' },
+  { name: 'PHP', icon: 'php' },
+  { name: 'MySQL', icon: 'mysql' },
+  { name: 'Claude Code', icon: 'claude' },
+  { name: 'Git', icon: 'git' },
+];
+---
+
+<div class="marquee relative overflow-hidden border-y border-border py-6" role="region" aria-label="Technologies I work with">
+  <ul class="sr-only">
+    {tech.map((t) => <li>{t.name}</li>)}
+  </ul>
+  <div class="marquee__track flex w-max gap-12 pr-12" aria-hidden="true">
+    {
+      [...tech, ...tech].map((t) => (
+        <span class="inline-flex items-center gap-2.5 text-sm font-semibold whitespace-nowrap text-fg-subtle">
+          <Icon name={t.icon} size={20} />
+          {t.name}
+        </span>
+      ))
+    }
+  </div>
+</div>
+
+<style>
+  .marquee {
+    mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+  }
+  .marquee__track {
+    animation: marquee 40s linear infinite;
+  }
+  .marquee:hover .marquee__track {
+    animation-play-state: paused;
+  }
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee__track {
+      animation: none;
+      flex-wrap: wrap;
+      width: auto;
+      justify-content: center;
+    }
+  }
+</style>

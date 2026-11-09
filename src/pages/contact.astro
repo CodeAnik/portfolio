@@ -1,0 +1,21 @@
+---
+import PageHeader from '@/components/layout/PageHeader.astro';
+import ContactSection from '@/components/sections/ContactSection.astro';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+const breadcrumbs = [{ name: 'Contact', path: '/contact/' }];
+---
+
+<BaseLayout
+  title="Contact — Full-Stack Web & Agentic AI Development"
+  description="Contact Md. Anik Khan about full-stack web applications, WordPress and WooCommerce projects or job opportunities — by email, the contact form or WhatsApp."
+  breadcrumbs={breadcrumbs}
+>
+  <PageHeader
+    eyebrow="Contact"
+    title="Let’s talk about your website or role."
+    lead="Send a message about a new project, a site that needs maintenance, or a position you’re hiring for. I reply by email or WhatsApp."
+    breadcrumbs={breadcrumbs}
+  />
+  <ContactSection heading={false} />
+</BaseLayout>

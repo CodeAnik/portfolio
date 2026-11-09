@@ -1,0 +1,61 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import Icon from './Icon.astro';
+import type { IconName } from './icons';
+
+type Variant = 'primary' | 'secondary' | 'ghost';
+type Size = 'md' | 'lg';
+
+type Props = Omit<HTMLAttributes<'a'>, 'class'> & {
+  href: string;
+  variant?: Variant;
+  size?: Size;
+  icon?: IconName;
+  iconPosition?: 'start' | 'end';
+  external?: boolean;
+  class?: string;
+};
+
+const {
+  href,
+  variant = 'primary',
+  size = 'md',
+  icon,
+  iconPosition = 'end',
+  external = false,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const variants: Record<Variant, string> = {
+  primary:
+    'bg-brand-strong text-white shadow-[0_8px_24px_-10px_rgb(217_11_90/0.7)] hover:bg-brand-hover hover:shadow-[0_12px_28px_-10px_rgb(217_11_90/0.8)]',
+  secondary: 'border border-border-strong bg-surface text-fg hover:border-fg/40 hover:bg-surface-2',
+  ghost: 'text-fg hover:bg-surface-2',
+};
+
+const sizes: Record<Size, string> = {
+  md: 'h-11 px-5 text-sm',
+  lg: 'h-12 px-6 text-[0.9375rem]',
+};
+
+const iconMotion = iconPosition === 'end' ? 'group-hover/btn:translate-x-0.5' : '';
+---
+
+<a
+  href={href}
+  class:list={[
+    'group/btn inline-flex items-center justify-center gap-2 rounded-[var(--radius-control)] font-semibold whitespace-nowrap transition-all duration-200 ease-out hover:-translate-y-px active:translate-y-0 active:scale-[0.98]',
+    variants[variant],
+    sizes[size],
+    className,
+  ]}
+  target={external ? '_blank' : undefined}
+  rel={external ? 'noopener noreferrer' : undefined}
+  {...rest}
+>
+  {icon && iconPosition === 'start' && <Icon name={icon} size={18} />}
+  <slot />
+  {icon && iconPosition === 'end' && <Icon name={icon} size={18} class:list={['transition-transform duration-200', iconMotion]} />}
+  {external && <span class="sr-only">(opens in a new tab)</span>}
+</a>

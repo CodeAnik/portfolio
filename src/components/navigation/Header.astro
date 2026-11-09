@@ -1,0 +1,233 @@
+---
+import Icon from '@/components/ui/Icon.astro';
+import Logo from '@/components/ui/Logo.astro';
+import SocialLinks from '@/components/ui/SocialLinks.astro';
+import { mainNav } from '@/data/navigation';
+import { profile } from '@/data/profile';
+import { normalizePath, url } from '@/lib/url';
+import ThemeToggle from './ThemeToggle.astro';
+
+const current = normalizePath(Astro.url.pathname);
+const home = url('/');
+
+function isActive(href: string): boolean {
+  if (href.includes('#')) return false;
+  const target = url(href);
+  return target === home ? current === home : current.startsWith(target);
+}
+---
+
+<header
+  data-header
+  class="fixed inset-x-0 top-0 z-50 border-b border-transparent transition-[background-color,border-color,box-shadow] duration-300 data-scrolled:border-border data-scrolled:bg-bg/80 data-scrolled:shadow-[0_8px_30px_-20px_rgb(0_0_0/0.25)] data-scrolled:backdrop-blur-xl data-menu-open:border-border data-menu-open:bg-bg"
+>
+  <div class="container-x flex h-16 items-center justify-between gap-4 md:h-[4.5rem]">
+    <Logo id="header-logo" />
+
+    <nav aria-label="Main" class="hidden lg:block">
+      <ul class="flex items-center gap-0.5">
+        {
+          mainNav.map((item) => {
+            const active = isActive(item.href);
+            return (
+              <li>
+                <a
+                  href={url(item.href)}
+                  aria-current={active ? 'page' : undefined}
+                  class:list={[
+                    'nav-link relative rounded-full px-3.5 py-2 text-sm font-medium transition-colors duration-200',
+                    active ? 'text-fg' : 'text-fg-muted hover:text-fg',
+                  ]}
+                >
+                  {item.label}
+                </a>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <ThemeToggle />
+      <a
+        href={url(profile.resume.pagePath)}
+        aria-current={current === url(profile.resume.pagePath) ? 'page' : undefined}
+        class="hidden h-10 items-center gap-2 rounded-full bg-fg px-4 text-sm font-semibold text-bg transition-all duration-200 hover:-translate-y-px hover:bg-brand-strong hover:text-white xl:inline-flex"
+      >
+        <Icon name="file-text" size={16} />
+        Resume
+      </a>
+      <button
+        type="button"
+        data-menu-button
+        class="grid size-10 place-items-center rounded-full border border-border bg-surface text-fg transition-colors hover:border-border-strong lg:hidden"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        aria-label="Open menu"
+      >
+        <Icon name="menu" size={20} class="menu-icon-open" />
+        <Icon name="x" size={20} class="menu-icon-close hidden" />
+      </button>
+    </div>
+  </div>
+
+  <div
+    id="mobile-menu"
+    data-mobile-menu
+    data-state="closed"
+    class="mobile-menu fixed inset-x-0 top-16 bottom-0 overflow-y-auto border-t border-border bg-bg md:top-[4.5rem] lg:hidden"
+    hidden
+  >
+    <nav aria-label="Mobile" class="container-x flex min-h-full flex-col py-8">
+      <ul class="flex flex-col">
+        {
+          mainNav.map((item, index) => {
+            const active = isActive(item.href);
+            return (
+              <li class="mobile-menu__item border-b border-border" style={`--i:${index}`}>
+                <a
+                  href={url(item.href)}
+                  aria-current={active ? 'page' : undefined}
+                  class:list={[
+                    'group flex items-center justify-between py-4 font-display text-2xl font-semibold tracking-tight transition-colors',
+                    active ? 'text-brand-ink' : 'text-fg hover:text-brand-ink',
+                  ]}
+                >
+                  {item.label}
+                  <Icon name="arrow-right" size={20} class="text-fg-subtle transition-transform group-hover:translate-x-1 group-hover:text-brand-ink" />
+                </a>
+              </li>
+            );
+          })
+        }
+      </ul>
+      <div class="mobile-menu__item mt-auto space-y-5 pt-10" style={`--i:${mainNav.length}`}>
+        <a href={`mailto:${profile.email}`} class="block text-sm font-medium text-fg-muted hover:text-fg">{profile.email}</a>
+        <SocialLinks size="sm" />
+        <a
+          href={url(profile.resume.pagePath)}
+          class="inline-flex h-11 items-center gap-2 rounded-[var(--radius-control)] bg-brand-strong px-5 text-sm font-semibold text-white"
+        >
+          <Icon name="file-text" size={16} />
+          View resume
+        </a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .nav-link[aria-current='page']::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 2px;
+    width: 1.25rem;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--gradient-brand);
+    transform: translateX(-50%);
+  }
+
+  .mobile-menu {
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+  .mobile-menu[data-state='open'] {
+    opacity: 1;
+  }
+  .mobile-menu__item {
+    opacity: 0;
+    transform: translateY(12px);
+    transition:
+      opacity 0.45s var(--ease-out-expo),
+      transform 0.45s var(--ease-out-expo);
+    transition-delay: calc(var(--i, 0) * 40ms + 40ms);
+  }
+  .mobile-menu[data-state='open'] .mobile-menu__item {
+    opacity: 1;
+    transform: none;
+  }
+</style>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-header]');
+  const button = document.querySelector<HTMLButtonElement>('[data-menu-button]');
+  const menu = document.querySelector<HTMLElement>('[data-mobile-menu]');
+
+  if (header) {
+    const onScroll = () => header.toggleAttribute('data-scrolled', window.scrollY > 8);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
+
+  if (header && button && menu) {
+    const outside = () => [document.querySelector('main'), document.querySelector('footer')];
+    const focusables = () =>
+      [button, ...menu.querySelectorAll<HTMLElement>('a[href], button:not([disabled])')].filter(
+        (el) => el.offsetParent !== null || el === button,
+      );
+    let closeTimer: number | undefined;
+
+    const open = () => {
+      window.clearTimeout(closeTimer);
+      menu.hidden = false;
+      requestAnimationFrame(() => (menu.dataset.state = 'open'));
+      button.setAttribute('aria-expanded', 'true');
+      button.setAttribute('aria-label', 'Close menu');
+      button.querySelector('.menu-icon-open')?.classList.add('hidden');
+      button.querySelector('.menu-icon-close')?.classList.remove('hidden');
+      header.setAttribute('data-menu-open', '');
+      document.body.style.overflow = 'hidden';
+      outside().forEach((el) => el?.setAttribute('inert', ''));
+      menu.querySelector<HTMLElement>('a[href]')?.focus();
+    };
+
+    const close = (restoreFocus = true) => {
+      menu.dataset.state = 'closed';
+      button.setAttribute('aria-expanded', 'false');
+      button.setAttribute('aria-label', 'Open menu');
+      button.querySelector('.menu-icon-open')?.classList.remove('hidden');
+      button.querySelector('.menu-icon-close')?.classList.add('hidden');
+      header.removeAttribute('data-menu-open');
+      document.body.style.overflow = '';
+      outside().forEach((el) => el?.removeAttribute('inert'));
+      closeTimer = window.setTimeout(() => (menu.hidden = true), 250);
+      if (restoreFocus) button.focus();
+    };
+
+    const isOpen = () => button.getAttribute('aria-expanded') === 'true';
+
+    button.addEventListener('click', () => (isOpen() ? close() : open()));
+
+    menu.addEventListener('click', (event) => {
+      if ((event.target as HTMLElement).closest('a')) close(false);
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (!isOpen()) return;
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        close();
+        return;
+      }
+      if (event.key === 'Tab') {
+        const items = focusables();
+        const first = items[0];
+        const last = items[items.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last?.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first?.focus();
+        }
+      }
+    });
+
+    window.matchMedia('(min-width: 1024px)').addEventListener('change', (event) => {
+      if (event.matches && isOpen()) close(false);
+    });
+  }
+</script>
