@@ -16,7 +16,7 @@
     "@fontsource-variable/inter": "^5.3.0",
     "@fontsource-variable/montserrat": "^5.3.0",
     "@tailwindcss/vite": "^4.3.3",
-    "astro": "^7.4.4",
+    "astro": "^7.4.7",
     "sharp": "^0.35.5",
     "tailwindcss": "^4.3.3"
   },
